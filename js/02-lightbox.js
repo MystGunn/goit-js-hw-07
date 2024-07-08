@@ -3,36 +3,19 @@ import { galleryItems } from './gallery-items.js';
 // console.log(galleryItems);
 
 
-const listEl = document.querySelector(".gallery");
+const galleryList = document.querySelector('.gallery');
+const galleryMarkup = galleryItems
+    .map(({ preview, original, description }) => `
+        <li class="gallery__item">
+            <a class="gallery__link" href="${original}">
+                <img class="gallery__image" src="${preview}" alt="${description}" />
+            </a>
+        </li>
+    `)
+    .join('');
 
-galleryItems.forEach( item => {
-    const listItem = document.createElement('li');
-    listItem.classList.add('gallery__item');
-    listItem.innerHTML = `
-    <a class='gallery__link' href='${item.original}'>
-    <img class="gallery__image"
-    src='${item.preview}'
-    data-source='${item.original}'
-    alt='${item.description}'/>
-    </a>
-    `;
-listEl.append(listItem);
-})
-
-listEl.addEventListener('click', openImageInModal)
-
-function openImageInModal(event) {
-    const clickedOn = event.target;
-
-    if (clickedOn.nodeName !== 'IMG') {
-        return;
-    }
-    event.preventDefault();
-    basicLightbox.create(
-    `
-		<img width="1400" height="900" src="${clickedOn.dataset.source}">
-	`
-)
-
-.show()
-}
+galleryList.innerHTML = galleryMarkup;
+const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+});
