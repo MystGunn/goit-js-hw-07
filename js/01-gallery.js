@@ -27,10 +27,21 @@ function openImageInModal(event) {
         return;
     }
     event.preventDefault();
-    basicLightbox.create(
+    const instance = basicLightbox.create(
     `
 		<img width="1400" height="900" src="${clickedOn.dataset.source}">
 	`
 )
-.show()
+
+instance.show()
+
+document.addEventListener('keydown', function onKeyPress(event) {
+    if (event.key === 'Escape') {
+        instance.close();
+        document.removeEventListener('keydown', onKeyPress);
+    }
+});
+setTimeout(() => {
+    instance.close((instance) => console.log('finished close()', instance));
+}, 3000);
 }
